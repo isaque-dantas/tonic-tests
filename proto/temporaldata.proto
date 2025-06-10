@@ -1,0 +1,20 @@
+syntax = "proto3";
+package temporaldata;
+
+service TemporalData {
+  rpc SendData (TemporalDataRequest) returns (TemporalDataResponse);
+  rpc GetData (TemporalDataRequest) returns (TemporalDataResponse);
+}
+
+message TemporalDataRequest {
+  repeated TemporalDataMessage data = 1;
+}
+
+message TemporalDataResponse {
+  repeated TemporalDataMessage data = 1;
+}
+
+message TemporalDataMessage {
+  string timestamp = 1;
+  float value = 2;
+}
