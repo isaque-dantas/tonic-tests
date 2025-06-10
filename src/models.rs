@@ -1,9 +1,9 @@
 use std::time::SystemTime;
-use diesel::{Insertable, Queryable};
+use diesel::{Insertable, Queryable, Selectable};
 use crate::schema::temporaldata;
 use crate::temporal_data::TemporalDataMessage;
 
-#[derive(Queryable)]
+#[derive(Queryable, Selectable)]
 #[diesel(table_name = temporaldata)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct TemporalDataFromDB {

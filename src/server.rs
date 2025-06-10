@@ -26,11 +26,11 @@ impl TemporalData for MyTemporalData {
         let saved_data = temporaldata_repository::save_data(inner_request);
         match saved_data {
             Some(saved_data) => {
-                let response: TemporalDataResponse = TemporalDataResponse {
+                let response_data: TemporalDataResponse = TemporalDataResponse {
                     data: saved_data.iter().map(|d| d.to_message()).collect(),
                 };
 
-                Ok(Response::new(response))
+                Ok(Response::new(response_data))
             }
             None => Err(Status::new(Code::Unknown, "An unknown error happened")),
         }
@@ -40,7 +40,10 @@ impl TemporalData for MyTemporalData {
         &self,
         _request: Request<TemporalDataRequest>,
     ) -> Result<Response<TemporalDataResponse>, Status> {
-        todo!()
+        
+        let data = temporaldata_repository::get_data();
+        
+        Ok(Response::new(data))
     }
 }
 

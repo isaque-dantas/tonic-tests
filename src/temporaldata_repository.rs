@@ -1,9 +1,8 @@
-use std::alloc::System;
 use crate::models::TemporalDataFromDB;
-use crate::temporal_data::{TemporalDataRequest};
-use chrono::{FixedOffset};
+use crate::schema::temporaldata::dsl::temporaldata;
+use crate::temporal_data::{TemporalDataRequest, TemporalDataResponse};
+use chrono::FixedOffset;
 use diesel::PgConnection;
-use diesel::data_types::PgTimestamp;
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::env;
@@ -65,4 +64,23 @@ fn get_time_from_string(timestamp: &String) -> SystemTime {
     };
 
     datetime.into()
+}
+
+pub fn get_data() -> TemporalDataResponse {
+    let connection = &mut establish_connection();
+    use crate::models::TemporalDataFromDB;
+
+    let temporal_data_from_db = temporaldata
+        .select(TemporalDataFromDB::as_select())
+        .get_results::<TemporalDataFromDB>(connection)
+        .unwrap();
+
+    let temporal_data_messages = temporal_data_from_db
+        .iter()
+        .map(|m| m.to_message())
+        .collect();
+
+    TemporalDataResponse {
+        data: temporal_data_messages,
+    }
 }
